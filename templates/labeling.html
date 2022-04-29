@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+{% block title%}신규 이미지 라벨링{% endblock %}
+{% block content %}
+{% load static %}
+{% if image %}
+<div class="d-flex">
+    <div class="card" style="width:65%; height: auto; text-align:center;">
+        <div class="card-body">
+            <img src="{% get_static_prefix %}image/{{image.filename}}" style="width: 100%; height: auto; margin-bottom: 0.5%; ">
+            <p class="card-text">{{image.filename}}</p>
+        </div>
+    </div>
+    <div style="margin-left: 2%; width:35%;">
+        <div class="card">  
+            <div class="card-body">
+                <form action="{% url 'annotation' image.id %}", method="post">
+                    {% csrf_token %}
+                    {% for c in class_list %}
+                    <input type="radio" name="choice" id="choice{{ forloop.counter }}" required value="{{ c }}">
+                    <label for="choice{{ forloop.counter }}">{{ c }}</label><br><br>
+                    {% endfor %}
+                    <!-- <input type="submit" value="value"> -->
+                    <button class="btn btn-default btn-block" type="submit">Submit</button>
+                </form>    
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+    라벨링을 진행할 이미지가 없습니다. <br />
+{% endif %}
+<div class="card">
+    <div class="h-container" style="text-align:center;">
+        {% for i in images %}
+        <a href="/labeling/{{i.id}}">
+            <img src="{% get_static_prefix %}image/{{i.filename}}" style="width: 8%; height:auto; margin:0.7%; margin-left: 0.75%; margin-right: 0.75%; border: solid green;">
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

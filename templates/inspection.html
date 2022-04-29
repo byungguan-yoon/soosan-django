@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block title%}실시간 분석 화면{% endblock %}
+{% block content %}
+{% load static %}
+<div class="d-flex">
+    <div class="card" style="width:65%; height: auto; text-align:center;">
+        <div class="card-body">
+            <img src="{% get_static_prefix %}image/{{image.filename}}" style="width: 100%; height: auto; margin-bottom: 1%; ">
+            <p class="card-text">{{ image.filename }}</p>
+        </div>  
+    </div>
+    <div style="margin-left: 2%; width:35%;">
+        <div class="card">  
+            <div class="card-body">
+                <h5 class="card-title">Predicted Value (3 Class)</h5>
+                <p class="card-text">예측 값: {{ image.result.predict_3class }}</p>
+                <p class="card-text">예측 확률: {{ image.result.confidence_3class }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Predicted Value (9 Class)</h5>
+                <p class="card-text">예측 값: {{ image.result.predict_9class }}</p>
+                <p class="card-text">예측 확률: {{ image.result.confidence_9class }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

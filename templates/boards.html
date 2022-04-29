@@ -1,0 +1,117 @@
+{% extends "index.html" %}
+{% block title%}과거 데이터 조회{% endblock %}
+{% block content %}
+
+<div class="card">
+  <nav class="navbar navbar-expand-lg navbar-transparent navbar-light navbar-theme-primary">
+    <div class="container position-relative">
+        <div class="navbar-collapse collapse" id="navbar-default-primary">
+            <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link" data-toggle="dropdown" role="button">
+                    <span class="nav-link-inner-text">Predicted Value</span>
+                    <i class="fas fa-angle-down nav-link-arrow ml-2"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=1">01.정상조직(템퍼드 마르텐사이트)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=2">02.재측정 필요 (초점)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=3">03.재측정 필요 (부식)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=4">04.재측정 필요 (위치)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=5">05.재측정 필요 (스크레치)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=6">06.부적합 (탄화물 미량_특채)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=7">07.부적합 (탄화물_폐기)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=8">08.부적합 (잔류오스테나이트)</a></li>
+                  <li><a class="dropdown-item" href="list?method=predicted_value&class_num=9">09.부적합 (탈탄)</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link" data-toggle="dropdown" role="button">
+                    <span class="nav-link-inner-text">Labeled Class</span>
+                    <i class="fas fa-angle-down nav-link-arrow ml-2"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=1">01.정상조직(템퍼드 마르텐사이트)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=2">02.재측정 필요 (초점)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=3">03.재측정 필요 (부식)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=4">04.재측정 필요 (위치)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=5">05.재측정 필요 (스크레치)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=6">06.부적합 (탄화물 미량_특채)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=7">07.부적합 (탄화물_폐기)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=8">08.부적합 (잔류오스테나이트)</a></li>
+                  <li><a class="dropdown-item" href="list?method=labeled_class&class_num=9">09.부적합 (탈탄)</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a href="#" class="nav-link" data-toggle="dropdown" role="button">
+                    <span class="nav-link-inner-text">Created Date</span>
+                    <i class="fas fa-angle-down nav-link-arrow ml-2"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="list?method=created_date&class_num=1">오름차순</a></li>
+                  <li><a class="dropdown-item" href="list?method=created_date&class_num=2">내림차순</a></li>
+                </ul>
+              </li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+</div>
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="table-responsive">
+        <!-- Projects table -->
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Filename</th>
+              <th scope="col">Predicted Value</th>
+              <th scope="col">Labeled Class</th>
+              <th scope="col">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in image %}
+            <tr style="cursor:pointer;" onclick="location.href='/inspection/{{i.id}}'">
+              <td>{{i.id}}</td>
+              <td>{{i.filename}}</td>
+              <td>{{i.result.predict_9class}}</td>
+              <td>{{i.labeling.ground_Y}}</td>
+              <td>{{i.created_at}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination circle-pagination" style="justify-content: center;">
+      {% if image.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?p={{image.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="#"><i class="fas fa-angle-double-left"></i></a>
+      </li>
+      {% endif %}
+      <li class="page-item">
+        <a class="page-link" href="#">{{image.number}}/{{image.paginator.num_pages}}</a>
+      </li>
+      {% if image.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?p={{image.next_page_number }}"><i class="fas fa-angle-double-right"></i></a>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="#"><i class="fas fa-angle-double-right"></i></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}

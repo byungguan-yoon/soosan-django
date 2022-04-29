@@ -1,0 +1,85 @@
+{% load static %}
+<!-- Sidenav -->
+<nav
+  class="
+    sidenav
+    navbar navbar-vertical
+    fixed-left
+    navbar-expand-xs navbar-light
+    bg-white
+  "
+  id="sidenav-main"
+  style="-webkit-transition: none; transition: none;"
+>
+  <div class="scrollbar-inner">
+    <div class="sidenav-header d-flex align-items-center">
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <img
+          src="{% static 'assets/img/ishango_logo6.png' %}"
+          height="20"
+          class="navbar-brand-img"
+          alt="..."
+        />
+      </a>
+      <div class="ml-auto">
+        <!-- Sidenav toggler -->
+        <div
+          class="sidenav-toggler d-none d-xl-block"
+          data-action="sidenav-unpin"
+          data-target="#sidenav-main"
+        >
+          <div class="sidenav-toggler-inner">
+            <i class="sidenav-toggler-line"></i>
+            <i class="sidenav-toggler-line"></i>
+            <i class="sidenav-toggler-line"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navbar-inner">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Nav items -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="{% url 'inspection' %}"
+              aria-expanded="true"
+              aria-controls="navbar-dashboards"
+            >
+              <i class="ni ni-zoom-split-in" style="color: chocolate;"></i>
+              <span class="nav-link-text">실시간 분석 화면</span>
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="{% url 'list' %}"
+              aria-expanded="true"
+              aria-controls="navbar-dashboards"
+            >
+              <i class="ni ni-bullet-list-67" style="color: chocolate;"></i>
+              <span class="nav-link-text">과거 데이터 조회</span>
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="{% url 'labeling' %}"
+              aria-expanded="true"
+              aria-controls="navbar-dashboards"
+            >
+              <i class="ni ni-ruler-pencil" style="color: chocolate;"></i>
+              <span class="nav-link-text">신규 이미지 라벨링</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
