@@ -27,6 +27,8 @@
     </div>
 </div>
 <script language="javascript">
-    window.setTimeout('window.location.reload()', 3000);
+    if (window.location.pathname.split('/')[2]===''){
+        window.setTimeout('window.location.reload()', 3000);
+    }
 </script>
 {% endblock %}
