@@ -1,10 +1,20 @@
 from visualize.views import index, login_view, logout_view, list_view, labeling_view, annotation_view, inspection_view, past_inspection_view, choice_labeling_view
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf.urls import url
+from rest_framework import routers, permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from ninja import NinjaAPI
+from visualize.images.apis import router as image_router
+
+api = NinjaAPI(title = "Soosan API")
+api.add_router("/images/", image_router, tags=["Common"])
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", index, name="index"),
+    path("ninja-api/", api.urls),
     path("login", login_view, name="login"),
     path("logout", logout_view, name="logout"),
     path("inspection/", inspection_view, name="inspection"),

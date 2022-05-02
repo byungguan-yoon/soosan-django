@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from visualize.forms import LoginForm
+from rest_framework import viewsets
 
 CLASS_LIST = ['01.정상조직(템퍼드 마르텐사이트)',
     '02.재측정 필요 (초점)', '03.재측정 필요 (부식)', '04.재측정 필요 (위치)', '05.재측정 필요 (스크레치)',

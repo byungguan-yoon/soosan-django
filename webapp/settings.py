@@ -39,7 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'visualize.apps.VisualizeConfig',
     'django_seed',
+    'rest_framework',
+    'drf_yasg',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
