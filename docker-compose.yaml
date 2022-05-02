@@ -1,0 +1,9 @@
+version: "3.0"
+services:
+    webapp:
+      image: jellyman/soosan-django:0.1.0
+      ports:
+        - "7000:7000"
+      volumes:
+        - ./:/usr/src/app/
+        - ~/soosan/image:/usr/src/app/visualize/static/image
