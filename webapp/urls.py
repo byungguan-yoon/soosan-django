@@ -1,4 +1,4 @@
-from visualize.views import index, login_view, logout_view, list_view, labeling_view, annotation_view, inspection_view, past_inspection_view, choice_labeling_view
+from visualize.views import index, login_view, logout_view, list_view, labeling_view, annotation_view, inspection_view, past_inspection_view, choice_labeling_view, dataset_view, make_dataset_view, train_view, aimodel_view, set_aimodel_view
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
@@ -23,4 +23,9 @@ urlpatterns = [
     path("labeling", labeling_view, name="labeling"),
     path("labeling/<int:id>", choice_labeling_view, name="choice_labeling"),
     path("annotation/<int:id>", annotation_view, name="annotation"),
+    path("dataset", dataset_view, name="dataset"),
+    path("make-dataset", make_dataset_view, name="make_dataset"),
+    path("train", train_view, name="train"),
+    path("aimodel", aimodel_view, name="aimodel"),
+    path("set-aimodel", set_aimodel_view, name="set_aimodel"),
 ]
