@@ -1,0 +1,175 @@
+{% extends "index.html" %}
+{% block title%}학습용 데이터 선택 및 학습{% endblock %}
+{% block content %}
+{% load static %}
+<div class="d-flex">
+    <div class="card" style="width:40%;">  
+        <form action="{% url 'make_dataset' %}", method="post">
+        {% csrf_token %}
+            <div class="card-body">
+                <div>
+                    <h2 class="card-title text-muted mb-0" style="text-align: center">데이터셋 선택</h3>
+                    <br />
+                </div>
+                <div class="input-daterange datepicker row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                </div>
+                                <input class="form-control" placeholder="Start date" type="text" name="startdate" value="{{from_date}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                </div>
+                                <input class="form-control" placeholder="End date" type="text" name="enddate" value="{{to_date}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="statics">
+                    {% for c in class_list %}
+                    {{ c }} : 
+                    <span id="{{c}}">0
+                    </span>
+                    <br /><br />
+                    {% endfor %}
+                    total :
+                    <span id="total">0
+                    </span>
+                    <br /><br />
+                </div>
+                <button class="btn btn-default btn-block" type="submit">데이터셋 생성</button>       
+            </div>
+        </form>
+    </div>
+    <div style="width:60%; margin-left: 2%;">
+        <form action="{% url 'train' %}", method="post">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title text-muted mb-0" style="text-align: center">학습 데이터 선택</h3>
+                        <br />
+                    </div>
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Select</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">User</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for d in data %}
+                          <tr>
+                            <td class="align-items-center">
+                                <input type="radio" name="choice" required value="{{ d.id }}">
+                            </td>
+                            <td>{{d.id}}</td>
+                            <td>{{d.dataset_start|date:"Y-m-d"}}</td>
+                            <td>{{d.dataset_end|date:"Y-m-d"}}</td>
+                            <td>{{d.user.username}}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                    <br />
+                    <div id="btn">
+                        {% if ai_model.status == 'finished' %}
+                        <button class="btn btn-default btn-block" type="submit">학습 시작</button>
+                        {% else %}
+                        <button class="btn btn-default btn-block" style="cursor:not-allowed;" disabled type="submit">학습 시작</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="width:100%;">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title text-muted mb-0" style="text-align: center">학습 진행 상황</h3>
+                        <br />
+                    </div>
+                    <div id="status">
+                        <div class="mt-3 mb-3 row-vh d-flex flex-row justify-content-around" >
+                            {% if ai_model.status == 'ready' %}
+                            <span class="alert alert-primary">Ready</span>
+                            {% else %}
+                            <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Ready</span>
+                            {% endif %}
+                            {% if ai_model.status == 'training' %}
+                            <span class="alert alert-primary">Training</span>
+                            {% else %}
+                            <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Training</span>
+                            {% endif %}
+                            {% if ai_model.status == 'finished' %}
+                            <span class="alert" style="color: white;   background-color: green;">Finished</span>
+                            {% else %}
+                            <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Finished</span>
+                            {% endif %}
+                            {% if ai_model.status == 'error' %}
+                            <span class="alert" style="color: white;   background-color: red;">Error</span>
+                            {% else %}
+                            <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Error</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const a = document.querySelector('input[name="startdate"]');
+    const b = document.querySelector('input[name="enddate"]');
+    a.addEventListener('focus', getStatics); 
+    b.addEventListener('focus', getStatics);
+    window.setTimeout(setInterval(showStatus, 3000), 3000)
+    window.setTimeout(setInterval(refreshBtn, 3000), 3000)
+
+    function showStatus() {
+        $("#status").load(window.location.href + " #status");
+    }
+    function refreshBtn() {
+        $("#btn").load(window.location.href + " #btn");
+    }
+    function getStatics() {
+        if (a.value!='' && b.value!=''){
+            df = {
+                "startdate": a.value,
+                "enddate": b.value
+            }
+
+            $.ajax({
+            type: 'GET',
+            url: '/ninja-api/images/bydate/statics',
+            data: df,
+            dataType:'text',
+            contentType:"application/json",
+            success: function(data){
+                result_of_parsing_json = JSON.parse(data);
+                var total = 0;
+                for (key in result_of_parsing_json) {
+                    var el = document.getElementById(key.normalize('NFC'));
+                    el.textContent = result_of_parsing_json[key];
+                    total = total + parseInt(result_of_parsing_json[key]);
+                }
+                var el = document.getElementById('total');
+                el.textContent = total;
+            },
+            error:function(request,status,error){
+                alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                },
+            });
+        }
+    }
+</script>
+{% endblock %}

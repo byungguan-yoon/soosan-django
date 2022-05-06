@@ -1,0 +1,129 @@
+{% extends "index.html" %}
+{% block title%}AI 모델 선택{% endblock %}
+{% block content %}
+{% load static %}
+<div class="d-flex">
+    <div class="card" id="board" style="width:100%;" >  
+        <form action="{% url 'set_aimodel' %}", method="post">
+        {% csrf_token %}
+            <div class="card-body">
+                <div>
+                    <h2 class="card-title text-muted mb-0" style="text-align: center">AI 모델 선택</h3>
+                    <br />
+                </div>
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Select</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Dataset</th>
+                            <th scope="col">Train Start</th>
+                            <th scope="col">Train End</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in ai_models %}
+                        <tr>
+                            <td class="align-items-center">
+                                <input type="radio" name="choice" required value="{{ a.id }}">
+                            </td>
+                            <td>{{a.id}}</td>
+                            <td>{{a.user.username}}</td>
+                            <td>{{a.dataset_id}}</td>
+                            <td>{{a.train_start|date:"Y-m-d"}}</td>
+                            <td>{{a.train_end|date:"Y-m-d"}}</td>
+                            <td>{{a.score}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br />
+                <div id="btn">
+                    {% if deploy.status == 'finished' %}
+                    <button class="btn btn-default btn-block" type="submit">모델 배포</button>
+                    {% else %}
+                    <button class="btn btn-default btn-block" style="cursor:not-allowed;" disabled type="submit">모델 배포</button>
+                    {% endif %}
+                </div>  
+            </div>
+        </form>
+    </div>
+</div>
+<div class="d-flex">
+    <div class="card" style="width:40%;">
+        <div class="card-body">
+            <div>
+                <h2 class="card-title text-muted mb-0" style="text-align: center">모델 배포 진행 상황</h3>
+                <br />
+            </div>
+            <div id="status">
+                <div class="mt-3 mb-3 row-vh d-flex flex-row justify-content-around" >
+                    {% if deploy.status == 'ready' %}
+                    <span class="alert alert-primary">Ready</span>
+                    {% else %}
+                    <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Ready</span>
+                    {% endif %}
+                    {% if deploy.status == 'deploying' %}
+                    <span class="alert alert-primary">Deploying</span>
+                    {% else %}
+                    <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Deploying</span>
+                    {% endif %}
+                    {% if deploy.status == 'finished' %}
+                    <span class="alert" style="color: white;   background-color: green;">Finished</span>
+                    {% else %}
+                    <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Finished</span>
+                    {% endif %}
+                    {% if deploy.status == 'error' %}
+                    <span class="alert" style="color: white;   background-color: red;">Error</span>
+                    {% else %}
+                    <span class="alert" style="color: #BCBCBC;   background-color: #EEEEEE;">Error</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" style="width:58%; margin-left: 2%;">
+        <div class="card-body">
+            <div id="deploy_board">
+                <h2 class="card-title text-muted mb-0" style="text-align: center">현재 배포 중인 모델</h3>
+                <br />
+                <table class="table align-items-center table-flush">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Dataset</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ai_model.id}}</td>
+                            <td>{{ai_model.user.username}}</td>
+                            <td>{{ai_model.dataset_id}}</td>
+                            <td>{{ai_model.score}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.setTimeout(setInterval(showStatus, 3000), 3000)
+    window.setTimeout(setInterval(refreshSubmit, 3000), 3000)
+    window.setTimeout(setInterval(refreshDeploy, 3000), 3000)
+
+    function showStatus() {
+        $("#status").load(window.location.href + " #status");
+    }
+    function refreshSubmit() {
+        $("#btn").load(window.location.href + " #btn");
+    }
+    function refreshDeploy() {
+        $("#deploy_board").load(window.location.href + " #deploy_board");
+    }
+</script>
+{% endblock %}
